@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'login_screen.dart'; // Importation de l'écran de connexion
+import 'login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -23,6 +23,21 @@ class _SignupScreenState extends State<SignupScreen> {
             color: Colors.blueAccent,
           ),
         ),
+        actions: <Widget>[
+          ButtonBar(
+            children: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreen()));
+                },
+                child: const Text('Login', style: TextStyle(color: Colors.blueAccent)),
+              ),
+            ],
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

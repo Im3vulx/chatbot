@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:chatbot/service/auth_service.dart';
 import 'package:chatbot/view/login_screen.dart';
 import 'package:chatbot/view/user_screen.dart';
+import 'package:chatbot/view/univers_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -64,6 +65,13 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               child:  const Icon(Icons.person),
             ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const UniversScreen())
+              );
+              }, 
+              child: const Icon(Icons.circle),
+            )
           ],
         ),
       ),

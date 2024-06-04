@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'signup_screen.dart';
+import 'package:chatbot/service/auth_service.dart';
+import 'package:chatbot/view/home_screen.dart';
+import 'package:chatbot/view/signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -9,93 +11,65 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _pseudoController = TextEditingController(text: '');
-  final _passwordController = TextEditingController(text: '');
-  bool _isPasswordVisible = false;
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final AuthentificationService _authentificationservice =
+      AuthentificationService();
+  String? _message;
 
-  @override
-  void dispose() {
-    _pseudoController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+  void _login() async {
+    final username = _usernameController.text;
+    final password = _passwordController.text;
+
+    final response = await _authentificationservice.login(username, password);
+
+    if (response.success) {
+      if (response.token != null) {
+        await _authentificationservice.saveToken(response.token!);
+      }
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    } else {
+      setState(() {
+        _message = response.message;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Log in',
-          style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-            color: Colors.blueAccent,
-          ),
-        ),
-        actions: <Widget>[
-          ButtonBar(
-            children: <Widget>[
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SignupScreen()));
-                },
-                child: const Text('Sign up',
-                    style: TextStyle(color: Colors.blueAccent)),
-              ),
-            ],
-          ),
-        ],
-      ),
-      body: Center(
-        child: Form(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _pseudoController,
-                  decoration: const InputDecoration(
-                    hintText: 'Pseudo',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _passwordController,
-                  obscureText: !_isPasswordVisible,
-                  decoration: InputDecoration(
-                    hintText: 'Password',
-                    border: const OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
-                        });
-                      },
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/home');
-                },
-                child: const Text('Log in'),
-              ),
-            ],
-          ),
+      appBar: AppBar(title: const Text('Login'), actions: [
+        ElevatedButton(
+            onPressed: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SignupScreen()));
+            },
+            child: const Text('Sign Up')),
+      ]),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _usernameController,
+              decoration: const InputDecoration(labelText: 'Username'),
+            ),
+            TextField(
+              controller: _passwordController,
+              decoration: const InputDecoration(labelText: 'Password'),
+              obscureText: true,
+            ),
+            if (_message != null) Text(_message!),
+            ElevatedButton(
+              onPressed: _login,
+              child: const Text('Login'),
+            ),
+          ],
         ),
       ),
     );

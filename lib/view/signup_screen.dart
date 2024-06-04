@@ -1,105 +1,100 @@
 import 'package:flutter/material.dart';
-import 'login_screen.dart';
+import 'package:chatbot/service/auth_service.dart';
+import 'package:chatbot/view/home_screen.dart';
+import 'package:chatbot/view/login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  State<SignupScreen> createState() => _SignupScreen();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
-  bool _isPasswordVisible = false;
+class _SignupScreen extends State<SignupScreen> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _firstnameController = TextEditingController();
+  final TextEditingController _lastnameController = TextEditingController();
+  final AuthentificationService _authentificationservice =
+      AuthentificationService();
+  String? _message;
+
+  void _register() async {
+    final String username = _usernameController.text;
+    final String password = _passwordController.text;
+    final String email = _emailController.text;
+    final String firstname = _firstnameController.text;
+    final String lastname = _lastnameController.text;
+
+    final response = await _authentificationservice.register(
+        username, password, email, firstname, lastname);
+
+    if (response.success) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    } else {
+      setState(() {
+        _message = response.message;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Sign Up',
-          style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-            color: Colors.blueAccent,
-          ),
-        ),
-        actions: <Widget>[
-          ButtonBar(
-            children: <Widget>[
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginScreen()));
-                },
-                child: const Text('Login', style: TextStyle(color: Colors.blueAccent)),
-              ),
-            ],
-          ),
+        title: const Text('Inscription'),
+        actions: [
+          ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()));
+              },
+              child: const Text('Sign In')),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          child: ListView(
-            children: <Widget>[
-              _buildInputField('Nom'),
-              const SizedBox(height: 8),
-              _buildInputField('Prénom'),
-              const SizedBox(height: 8),
-              _buildInputField('Pseudo'),
-              const SizedBox(height: 8),
-              _buildInputField('Email'),
-              const SizedBox(height: 8),
-              _buildPasswordField('Password'),
-              const SizedBox(height: 8),
-              _buildPasswordField('Confirm Password'),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  // Navigation vers l'écran de connexion
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  );
-                },
-                child: const Text('Sign Up',
-                    style: TextStyle(color: Colors.blueAccent)),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: <Widget>[
+            if (_message != null)
+              Container(
+                alignment: Alignment.center,
+                child: Text(_message!),
               ),
-            ],
-          ),
+            TextField(
+              controller: _usernameController,
+              decoration:
+                  const InputDecoration(labelText: 'Nom d\'utilisateur'),
+            ),
+            TextField(
+              controller: _passwordController,
+              decoration: const InputDecoration(labelText: 'Mot de passe'),
+              obscureText: true,
+            ),
+            TextField(
+              controller: _emailController,
+              decoration: const InputDecoration(labelText: 'Email'),
+            ),
+            TextField(
+              controller: _firstnameController,
+              decoration: const InputDecoration(labelText: 'Prénom'),
+            ),
+            TextField(
+              controller: _lastnameController,
+              decoration: const InputDecoration(labelText: 'Nom'),
+            ),
+            ElevatedButton(
+              onPressed: _register,
+              child: const Text('S\'inscrire'),
+            ),
+          ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildInputField(String hintText) {
-    return TextFormField(
-      decoration: InputDecoration(
-        hintText: hintText,
-        border: const OutlineInputBorder(),
-      ),
-    );
-  }
-
-  Widget _buildPasswordField(String hintText) {
-    return TextFormField(
-      obscureText: !_isPasswordVisible,
-      decoration: InputDecoration(
-        hintText: hintText,
-        suffixIcon: IconButton(
-          onPressed: () {
-            setState(() {
-              _isPasswordVisible = !_isPasswordVisible;
-            });
-          },
-          icon: Icon(
-            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-            color: Colors.grey,
-          ),
-        ),
-        border: const OutlineInputBorder(),
       ),
     );
   }

@@ -1,5 +1,5 @@
-import 'package:chatbot/service/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:chatbot/service/universe_service.dart';
 import 'package:chatbot/view/add_univers.dart';
 import 'package:chatbot/view/home_screen.dart';
 
@@ -11,7 +11,7 @@ class UniversScreen extends StatefulWidget {
 }
 
 class _UniversScreenState extends State<UniversScreen> {
-  final AuthentificationService _apiService = AuthentificationService();
+  final UniverseService _apiUniverseServie = UniverseService();
   List<Map<String, dynamic>> _allUniverseInfo = [];
 
   @override
@@ -21,7 +21,7 @@ class _UniversScreenState extends State<UniversScreen> {
   }
 
   Future<void> _loadAllUnivers() async {
-    final allUniverseInfo = await _apiService.getAllUniverseInfo();
+    final allUniverseInfo = await _apiUniverseServie.getAllUniverseInfo();
     setState(() {
       _allUniverseInfo = allUniverseInfo;
     });

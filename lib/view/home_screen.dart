@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:chatbot/service/auth_service.dart';
 import 'package:chatbot/view/login_screen.dart';
+import 'package:chatbot/view/user_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,6 +12,20 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final AuthentificationService _apiService = AuthentificationService();
+  Map<String, dynamic>? _userInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfo();
+  }
+
+  Future<void> _loadUserInfo() async {
+    final userInfo = await _apiService.getUserInfo();
+    setState(() {
+      _userInfo = userInfo;
+    });
+  }
 
   void _logout(BuildContext context) async {
     await _apiService.logout();
@@ -32,8 +47,25 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: const Center(
-        child: Text('Welcome to the Home Screen!'),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Center(
+              child: Text('Bonjour ${_userInfo?['username']}!'),
+            ),
+            const SizedBox(height: 20.0), // Add spacing between greeting and cards
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const UserScreen()),
+                );
+              },
+              child:  const Icon(Icons.person),
+            ),
+          ],
+        ),
       ),
     );
   }

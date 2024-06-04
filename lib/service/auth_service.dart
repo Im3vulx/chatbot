@@ -31,6 +31,15 @@ class AuthentificationService {
       final jsonResponse = jsonDecode(response.body);
       if (jsonResponse['token'] != null) {
         await saveToken(jsonResponse['token']);
+        final tokenParts = jsonResponse['token'].split('.');
+        final payload =
+            json.decode(utf8.decode(base64Url.decode(tokenParts[1].padRight(
+          tokenParts[1].length + (4 - tokenParts[1].length % 4) % 4,
+          '=',
+        ))));
+        final data = jsonDecode(payload['data']);
+        print('Data User: $data');
+        await saveId(data['id']);
       }
       return ApiResponse.fromJson(jsonResponse);
     } else {
@@ -65,6 +74,15 @@ class AuthentificationService {
       final jsonResponse = json.decode(response.body);
       if (jsonResponse['token'] != null) {
         await saveToken(jsonResponse['token']);
+        final tokenParts = jsonResponse['token'].split('.');
+        final payload =
+            json.decode(utf8.decode(base64Url.decode(tokenParts[1].padRight(
+          tokenParts[1].length + (4 - tokenParts[1].length % 4) % 4,
+          '=',
+        ))));
+        print('Payload: $payload');
+        final id = payload['data']['id'];
+        print('id: $id');
       }
       return ApiResponse.fromJson(jsonResponse);
     } else {
@@ -77,13 +95,70 @@ class AuthentificationService {
     await prefs.setString('token', token);
   }
 
+  Future<void> saveId(int id) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('id', id.toString());
+  }
+
   Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('token');
   }
 
+  Future<String?> getId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('id');
+  }
+
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('id');
     await prefs.remove('token');
+  }
+
+  Future<Map<String, dynamic>?> getUserInfo() async {
+    final id = await getId();
+    final token = await getToken();
+    if (id == null) return null;
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/users/$id'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    print('Response status getUser: ${response.statusCode}');
+    print('Response body getUser: ${response.body}');
+
+    if (response.statusCode == 200) {
+      print('User info loaded: ${response.body}');
+      return jsonDecode(response.body) as Map<String, dynamic>;
+    } else {
+      print('Failed to load user info: ${response.body}');
+      return null;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getAllUsers() async {
+    final token = await getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/users'),
+      headers: {
+        'Content-Type': 'application',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    print('Response status getAllUsers: ${response.statusCode}');
+    print('Response body getAllUsers: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final List<dynamic> users = jsonDecode(response.body);
+      return users.map((e) => e as Map<String, dynamic>).toList();
+    } else {
+      return [];
+    }
   }
 }

@@ -2,7 +2,7 @@ class ApiResponse {
   final bool success;
   final String message;
   final String? token;
-  final int? id;
+  final String? id;
 
   ApiResponse(
       {required this.success, required this.message, this.token, this.id});

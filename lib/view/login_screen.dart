@@ -13,19 +13,18 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final AuthentificationService _authentificationservice =
-      AuthentificationService();
-  String? _message;
+  final AuthentificationService _authentificationService = AuthentificationService();
+  String? _errorMessage;
 
   void _login() async {
     final username = _usernameController.text;
     final password = _passwordController.text;
 
-    final response = await _authentificationservice.login(username, password);
+    final response = await _authentificationService.login(username, password);
 
     if (response.success) {
       if (response.token != null) {
-        await _authentificationservice.saveToken(response.token!);
+        await _authentificationService.saveToken(response.token!);
       }
       Navigator.pushReplacement(
         context,
@@ -33,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } else {
       setState(() {
-        _message = response.message;
+        _errorMessage = response.message;
       });
     }
   }
@@ -41,33 +40,47 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login'), actions: [
-        ElevatedButton(
+      appBar: AppBar(
+        title: const Text('Connexion'),
+        actions: [
+          ElevatedButton(
             onPressed: () {
               Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SignupScreen()));
+                context,
+                MaterialPageRoute(builder: (context) => const SignupScreen()),
+              );
             },
-            child: const Text('Sign Up')),
-      ]),
+            child: const Text('S\'inscrire'),
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
               controller: _usernameController,
-              decoration: const InputDecoration(labelText: 'Username'),
+              decoration: const InputDecoration(labelText: 'Nom d\'utilisateur'),
             ),
+            const SizedBox(height: 16),
             TextField(
               controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
+              decoration: const InputDecoration(labelText: 'Mot de passe'),
               obscureText: true,
             ),
-            if (_message != null) Text(_message!),
+            if (_errorMessage != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Text(
+                  _errorMessage!,
+                  style: const TextStyle(color: Colors.red),
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ElevatedButton(
               onPressed: _login,
-              child: const Text('Login'),
+              child: const Text('Se connecter'),
             ),
           ],
         ),

@@ -46,45 +46,45 @@ class _UniversScreenState extends State<UniversScreen> {
             );
           },
         ),
-        title: const Text('Universe List'),
+        title: const Text('Liste des Univers'),
       ),
       body: RefreshIndicator(
         onRefresh: _loadAllUnivers,
-        child :Center(
-        child: _allUniverseInfo.isEmpty
-            ? const CircularProgressIndicator()
-            : ListView.builder(
-                itemCount: _allUniverseInfo.length,
-                itemBuilder: (context, index) {
-                  return buildUniverseColumn(context, _allUniverseInfo[index]);
-                },
-              ),
+        child: Center(
+          child: _allUniverseInfo.isEmpty
+              ? const CircularProgressIndicator()
+              : ListView.builder(
+                  itemCount: _allUniverseInfo.length,
+                  itemBuilder: (context, index) {
+                    return buildUniverseColumn(context, _allUniverseInfo[index]);
+                  },
+                ),
         ),
-      ), 
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: const Text('Add Universe'),
+                title: const Text('Ajouter un univers'),
                 content: TextField(
                   controller: _textFieldController,
-                  decoration: const InputDecoration(hintText: "Enter Universe Name"),
+                  decoration: const InputDecoration(hintText: 'Entrez le nom de l\'univers'),
                 ),
                 actions: [
                   TextButton(
-                    child: const Text('Cancel'),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
+                    child: const Text('Annuler'),
                   ),
                   TextButton(
-                    child: const Text('Add'),
                     onPressed: () {
                       _addUniverse();
                       Navigator.of(context).pop();
                     },
+                    child: const Text('Ajouter'),
                   ),
                 ],
               );
@@ -108,21 +108,15 @@ class _UniversScreenState extends State<UniversScreen> {
       },
       child: Container(
         margin: const EdgeInsets.all(10.0),
-        height: 60.0,
-        decoration: const BoxDecoration(
-          border: Border(
-            top: BorderSide(color: Colors.black),
-            right: BorderSide(color: Colors.black),
-            bottom: BorderSide(color: Colors.black),
-            left: BorderSide(color: Colors.black),
-          ),
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        height: 100.0,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black),
+          borderRadius: BorderRadius.circular(10.0),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 10.0),
+              padding: const EdgeInsets.all(8.0),
               child: Image.network(
                 'https://mds.sprw.dev/image_data/${universeInfo['image']}',
                 errorBuilder: (context, error, stackTrace) => const Icon(
@@ -133,11 +127,12 @@ class _UniversScreenState extends State<UniversScreen> {
             ),
             Expanded(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    universeInfo['name'] ?? 'Universe unknown',
-                    style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    universeInfo['name'] ?? 'Univers inconnu',
+                    style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),

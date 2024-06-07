@@ -96,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('Univers', style: TextStyle(fontSize: 18)),
-                      Icon(Icons.circle),
+                      Icon(Icons.public),
                     ],
                   ),
                 ),

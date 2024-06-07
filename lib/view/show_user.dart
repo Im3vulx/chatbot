@@ -1,9 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:chatbot/service/auth_service.dart';
 import 'package:chatbot/view/user_screen.dart';
-import 'package:flutter/material.dart';
 
 class ShowUser extends StatefulWidget {
-  const ShowUser({Key? key, required this.userId}) : super(key: key);
+  const ShowUser({super.key, required this.userId});
   final String userId;
 
   @override
@@ -61,28 +61,39 @@ class _ShowUserState extends State<ShowUser> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextFormField(
-              controller: _usernameController,
-              decoration: const InputDecoration(labelText: 'Username'),
+            Card(
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextFormField(
+                      controller: _usernameController,
+                      decoration: const InputDecoration(labelText: 'Username'),
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: const InputDecoration(labelText: 'Email'),
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _firstnameController,
+                      decoration: const InputDecoration(labelText: 'Firstname'),
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _lastnameController,
+                      decoration: const InputDecoration(labelText: 'Lastname'),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _firstnameController,
-              decoration: const InputDecoration(labelText: 'Firstname'),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _lastnameController,
-              decoration: const InputDecoration(labelText: 'Lastname'),
-            ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 _updateUser();

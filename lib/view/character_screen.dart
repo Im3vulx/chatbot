@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:chatbot/service/character_service.dart';
 import 'package:chatbot/view/show_character.dart';
-import 'package:flutter/material.dart';
 
 class CharacterScreen extends StatefulWidget {
   const CharacterScreen({super.key, required this.universeId});
@@ -39,45 +39,45 @@ class _CharacterScreenState extends State<CharacterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Character List'),
+        title: const Text('Liste des Personnages'),
       ),
       body: RefreshIndicator(
         onRefresh: _loadAllCharacters,
-        child :Center(
-        child: _allCharacterInfo.isEmpty
-            ? const CircularProgressIndicator()
-            : ListView.builder(
-                itemCount: _allCharacterInfo.length,
-                itemBuilder: (context, index) {
-                  return buildUniverseColumn(context, _allCharacterInfo[index], widget.universeId);
-                },
-              ),
+        child: Center(
+          child: _allCharacterInfo.isEmpty
+              ? const CircularProgressIndicator()
+              : ListView.builder(
+                  itemCount: _allCharacterInfo.length,
+                  itemBuilder: (context, index) {
+                    return buildCharacterCard(context, _allCharacterInfo[index], widget.universeId);
+                  },
+                ),
         ),
-      ), 
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: const Text('Add Character'),
+                title: const Text('Ajouter un Personnage'),
                 content: TextField(
                   controller: _textFieldController,
-                  decoration: const InputDecoration(hintText: "Enter Character Name"),
+                  decoration: const InputDecoration(hintText: 'Entrez le nom du personnage'),
                 ),
                 actions: [
                   TextButton(
-                    child: const Text('Cancel'),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
+                    child: const Text('Annuler'),
                   ),
                   TextButton(
-                    child: const Text('Add'),
                     onPressed: () {
                       _addCharacter();
                       Navigator.of(context).pop();
                     },
+                    child: const Text('Ajouter'),
                   ),
                 ],
               );
@@ -89,32 +89,30 @@ class _CharacterScreenState extends State<CharacterScreen> {
     );
   }
 
-  Widget buildUniverseColumn(BuildContext context, Map<String, dynamic> characterInfo, String universeId) {
+  Widget buildCharacterCard(BuildContext context, Map<String, dynamic> characterInfo, String universeId) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => CharacterShow(universeId: universeId, characterId: characterInfo['id'].toString()),
-          )
+          MaterialPageRoute(
+            builder: (context) => CharacterShow(
+              universeId: universeId,
+              characterId: characterInfo['id'].toString(),
+            ),
+          ),
         );
       },
       child: Container(
         margin: const EdgeInsets.all(10.0),
-        height: 60.0,
-        decoration: const BoxDecoration(
-          border: Border(
-            top: BorderSide(color: Colors.black),
-            right: BorderSide(color: Colors.black),
-            bottom: BorderSide(color: Colors.black),
-            left: BorderSide(color: Colors.black),
-          ),
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        height: 100.0,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black),
+          borderRadius: BorderRadius.circular(10.0),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 10.0),
+              padding: const EdgeInsets.all(8.0),
               child: Image.network(
                 'https://mds.sprw.dev/image_data/${characterInfo['image']}',
                 errorBuilder: (context, error, stackTrace) => const Icon(
@@ -125,11 +123,12 @@ class _CharacterScreenState extends State<CharacterScreen> {
             ),
             Expanded(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    characterInfo['name'] ?? 'Character unknown',
-                    style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    characterInfo['name'] ?? 'Personnage inconnu',
+                    style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),

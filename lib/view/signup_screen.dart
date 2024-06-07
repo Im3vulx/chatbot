@@ -7,18 +7,17 @@ class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 
   @override
-  State<SignupScreen> createState() => _SignupScreen();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignupScreen extends State<SignupScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _firstnameController = TextEditingController();
   final TextEditingController _lastnameController = TextEditingController();
-  final AuthentificationService _authentificationservice =
-      AuthentificationService();
-  String? _message;
+  final AuthentificationService _authentificationService = AuthentificationService();
+  String? _errorMessage;
 
   void _register() async {
     final String username = _usernameController.text;
@@ -27,8 +26,7 @@ class _SignupScreen extends State<SignupScreen> {
     final String firstname = _firstnameController.text;
     final String lastname = _lastnameController.text;
 
-    final response = await _authentificationservice.register(
-        username, password, email, firstname, lastname);
+    final response = await _authentificationService.register(username, password, email, firstname, lastname);
 
     if (response.success) {
       Navigator.pushReplacement(
@@ -37,7 +35,7 @@ class _SignupScreen extends State<SignupScreen> {
       );
     } else {
       setState(() {
-        _message = response.message;
+        _errorMessage = response.message;
       });
     }
   }
@@ -49,28 +47,32 @@ class _SignupScreen extends State<SignupScreen> {
         title: const Text('Inscription'),
         actions: [
           ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const LoginScreen()));
-              },
-              child: const Text('Sign In')),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+              );
+            },
+            child: const Text('Se connecter'),
+          ),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            if (_message != null)
+            if (_errorMessage != null)
               Container(
                 alignment: Alignment.center,
-                child: Text(_message!),
+                child: Text(
+                  _errorMessage!,
+                  style: const TextStyle(color: Colors.red),
+                ),
               ),
             TextField(
               controller: _usernameController,
-              decoration:
-                  const InputDecoration(labelText: 'Nom d\'utilisateur'),
+              decoration: const InputDecoration(labelText: 'Nom d\'utilisateur'),
             ),
             TextField(
               controller: _passwordController,
@@ -89,6 +91,7 @@ class _SignupScreen extends State<SignupScreen> {
               controller: _lastnameController,
               decoration: const InputDecoration(labelText: 'Nom'),
             ),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _register,
               child: const Text('S\'inscrire'),

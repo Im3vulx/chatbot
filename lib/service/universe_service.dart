@@ -103,4 +103,27 @@ class UniverseService {
       return ApiResponse(success: false, message: 'Failed to update universe');
     }
   }
+
+  // getUniverseData
+  Future<Map<String, dynamic>?> getUniverseData(String id) async {
+    final token = await AuthentificationService().getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/universes/$id'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    print('Response status getUniverseData: ${response.statusCode}');
+    print('Response body getUniverseData: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      return data;
+    } else {
+      print('Failed to load universe data');
+      return null;
+    }
+  }
 }

@@ -12,7 +12,7 @@ class ApiResponse {
       success: json['success'] ?? true,
       message: json['message'] ?? '',
       token: json['token'],
-      id: json['id'],
+      id: json['id'].toString(),
     );
   }
 }

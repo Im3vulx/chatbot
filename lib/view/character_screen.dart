@@ -1,62 +1,55 @@
+import 'package:chatbot/service/character_service.dart';
+import 'package:chatbot/view/show_character.dart';
 import 'package:flutter/material.dart';
-import 'package:chatbot/service/universe_service.dart';
-import 'package:chatbot/view/home_screen.dart';
-import 'package:chatbot/view/universe_info.dart';
 
-class UniversScreen extends StatefulWidget {
-  const UniversScreen({super.key});
+class CharacterScreen extends StatefulWidget {
+  const CharacterScreen({super.key, required this.universeId});
+  final String universeId;
 
   @override
-  State<UniversScreen> createState() => _UniversScreenState();
+  State<CharacterScreen> createState() => _CharacterScreenState();
 }
 
-class _UniversScreenState extends State<UniversScreen> {
-  final UniverseService _apiUniverseService = UniverseService();
-  List<Map<String, dynamic>> _allUniverseInfo = [];
+class _CharacterScreenState extends State<CharacterScreen> {
+  final CharacterService _apiCharacterService = CharacterService();
+  List<Map<String, dynamic>> _allCharacterInfo = [];
   final TextEditingController _textFieldController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _loadAllUnivers();
+    _loadAllCharacters();
   }
 
-  Future<void> _loadAllUnivers() async {
-    final allUniverseInfo = await _apiUniverseService.getAllUniverseInfo();
+  Future<void> _loadAllCharacters() async {
+    final allCharacterInfo = await _apiCharacterService.getAllCharacterInfo(widget.universeId);
     setState(() {
-      _allUniverseInfo = allUniverseInfo;
+      _allCharacterInfo = allCharacterInfo;
     });
   }
 
-  void _addUniverse() async {
-    await _apiUniverseService.addUniverse(_textFieldController.text);
-    _loadAllUnivers();
+  Future<void> _addCharacter() async {
+    final name = _textFieldController.text;
+    final universeId = widget.universeId;
+    await _apiCharacterService.addCharacter(name, universeId);
+    _loadAllCharacters();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
-            );
-          },
-        ),
-        title: const Text('Universe List'),
+        title: const Text('Character List'),
       ),
       body: RefreshIndicator(
-        onRefresh: _loadAllUnivers,
+        onRefresh: _loadAllCharacters,
         child :Center(
-        child: _allUniverseInfo.isEmpty
+        child: _allCharacterInfo.isEmpty
             ? const CircularProgressIndicator()
             : ListView.builder(
-                itemCount: _allUniverseInfo.length,
+                itemCount: _allCharacterInfo.length,
                 itemBuilder: (context, index) {
-                  return buildUniverseColumn(context, _allUniverseInfo[index]);
+                  return buildUniverseColumn(context, _allCharacterInfo[index], widget.universeId);
                 },
               ),
         ),
@@ -67,10 +60,10 @@ class _UniversScreenState extends State<UniversScreen> {
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: const Text('Add Universe'),
+                title: const Text('Add Character'),
                 content: TextField(
                   controller: _textFieldController,
-                  decoration: const InputDecoration(hintText: "Enter Universe Name"),
+                  decoration: const InputDecoration(hintText: "Enter Character Name"),
                 ),
                 actions: [
                   TextButton(
@@ -82,7 +75,7 @@ class _UniversScreenState extends State<UniversScreen> {
                   TextButton(
                     child: const Text('Add'),
                     onPressed: () {
-                      _addUniverse();
+                      _addCharacter();
                       Navigator.of(context).pop();
                     },
                   ),
@@ -96,14 +89,13 @@ class _UniversScreenState extends State<UniversScreen> {
     );
   }
 
-  Widget buildUniverseColumn(BuildContext context, Map<String, dynamic> universeInfo) {
+  Widget buildUniverseColumn(BuildContext context, Map<String, dynamic> characterInfo, String universeId) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-            builder: (context) => UniverseInfo(universeId: universeInfo['id'].toString()),
-          ),
+          MaterialPageRoute(builder: (context) => CharacterShow(universeId: universeId, characterId: characterInfo['id'].toString()),
+          )
         );
       },
       child: Container(
@@ -124,7 +116,7 @@ class _UniversScreenState extends State<UniversScreen> {
             Padding(
               padding: const EdgeInsets.only(left: 16.0, right: 10.0),
               child: Image.network(
-                'https://mds.sprw.dev/image_data/${universeInfo['image']}',
+                'https://mds.sprw.dev/image_data/${characterInfo['image']}',
                 errorBuilder: (context, error, stackTrace) => const Icon(
                   Icons.image_not_supported,
                   size: 60.0,
@@ -136,7 +128,7 @@ class _UniversScreenState extends State<UniversScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    universeInfo['name'] ?? 'Universe unknown',
+                    characterInfo['name'] ?? 'Character unknown',
                     style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                 ],

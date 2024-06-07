@@ -29,7 +29,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
   }
 
   Future<void> _loadAllConversation() async {
-    final allConversation = await _apiConversationService.getAllConversationInfo();
+    final allConversation =
+        await _apiConversationService.getAllConversationInfo();
     setState(() {
       _allConversation = allConversation;
     });
@@ -53,7 +54,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   Future<void> _createConversation() async {
     if (selectedCharacter != null) {
-      await _apiConversationService.addConversation(selectedUniverse!, selectedCharacter!);
+      await _apiConversationService.addConversation(
+          selectedUniverse!, selectedCharacter!);
       await _loadAllConversation();
     }
   }
@@ -95,45 +97,71 @@ class _ConversationScreenState extends State<ConversationScreen> {
               onDismissed: (direction) {
                 _deleteConversation(conversation['id'].toString());
               },
-              background: Stack(
-                children: <Widget>[
-                  Container(color: Colors.red),
-                  const Align(
-                    alignment: Alignment.center,
-                    child: Icon(
-                      Icons.delete,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
+              background: Container(
+                color: Colors.red,
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.only(right: 20.0),
+                child: const Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                ),
               ),
-              child: FutureBuilder<Map<String, dynamic>>(
-                future:
-                    _getCharacterById(conversation['character_id'].toString()),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const ListTile(
-                      title: Text('Loading...'),
-                    );
-                  } else if (snapshot.hasError) {
-                    return const ListTile(
-                      title: Text('Error loading character'),
-                    );
-                  } else {
-                    final character = snapshot.data ?? {};
-                    return ListTile(
-                      leading: character['image'] != null
-                          ? Image.network(
-                              'https://mds.sprw.dev/image_data/${character['image']}',
-                              width: 50,
-                              height: 50,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  const Icon(Icons.error),
-                            )
-                          : const Icon(Icons.person),
-                      title: Text(character['name'] ?? 'Unknown'),
-                      onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MessageScreen(conversationId: conversation['id'].toString(), characterName: character['name'].toString(), characterImage: character['image'].toString())),
-                    )
+              child: ListTile(
+                leading: FutureBuilder<Map<String, dynamic>>(
+                  future: _getCharacterById(
+                      conversation['character_id'].toString()),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return const Icon(Icons.error);
+                    } else {
+                      final character = snapshot.data ?? {};
+                      return CircleAvatar(
+                        backgroundColor: character['image'] == null
+                            ? Colors.blue
+                            : null, // Couleur de fond différente si aucune image
+                        child: character['image'] !=
+                                null // Vérifie s'il y a une image
+                            ? Image.network(
+                                'https://mds.sprw.dev/image_data/${character['image']}',
+                                width: 50,
+                                height: 50,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const Icon(Icons.error),
+                              )
+                            : const Icon(Icons.android), // Utilise un autre icône s'il n'y a pas d'image
+                      );
+                    }
+                  },
+                ),
+                title: FutureBuilder<Map<String, dynamic>>(
+                  future: _getCharacterById(
+                      conversation['character_id'].toString()),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Text('Loading...');
+                    } else if (snapshot.hasError) {
+                      return const Text('Error loading character');
+                    } else {
+                      final character = snapshot.data ?? {};
+                      return Text(character['name'] ?? 'Unknown');
+                    }
+                  },
+                ),
+                onTap: () async {
+                  final character = await _getCharacterById(
+                      conversation['character_id'].toString());
+                  if (character != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MessageScreen(
+                          conversationId: conversation['id'].toString(),
+                          characterName: character['name'].toString(),
+                          characterImage: character['image'].toString(),
+                        ),
+                      ),
                     );
                   }
                 },
@@ -173,35 +201,20 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               .toList(),
                         ),
                         if (selectedUniverse != null)
-                          FutureBuilder<List<Map<String, dynamic>>>(
-                            future: _apiConversationService
-                                .getCharactersByUniverse(selectedUniverse!),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const CircularProgressIndicator();
-                              } else if (snapshot.hasError) {
-                                return const Text('Erreur de chargement');
-                              } else {
-                                final characters = snapshot.data ?? [];
-                                return DropdownButton<String>(
-                                  value: selectedCharacter,
-                                  hint:
-                                      const Text('Sélectionnez un personnage'),
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      selectedCharacter = newValue;
-                                    });
-                                  },
-                                  items: characters
-                                      .map((e) => DropdownMenuItem<String>(
-                                            value: e['id'].toString(),
-                                            child: Text(e['name']),
-                                          ))
-                                      .toList(),
-                                );
-                              }
+                          DropdownButton<String>(
+                            value: selectedCharacter,
+                            hint: const Text('Sélectionnez un personnage'),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectedCharacter = newValue;
+                              });
                             },
+                            items: characters
+                                .map((e) => DropdownMenuItem<String>(
+                                      value: e['id'].toString(),
+                                      child: Text(e['name']),
+                                    ))
+                                .toList(),
                           ),
                       ],
                     ),
@@ -226,9 +239,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
             },
           );
         },
-        child: const Icon(
-          Icons.add,
-        ),
+        child: const Icon(Icons.add),
       ),
     );
   }

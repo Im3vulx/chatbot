@@ -118,13 +118,18 @@ class _MessageScreenState extends State<MessageScreen>
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: CircleAvatar(
-                backgroundImage: Image.network(
-                        'https://mds.sprw.dev/image_data/${widget.characterImage}')
-                    .image,
-                onBackgroundImageError: (exception, stackTrace) => const Icon(
-                  Icons.error,
-                  size: 40.0,
-                ),
+                backgroundColor: widget.characterImage == null
+                    ? Colors.blue
+                    : null, // Couleur de fond différente si aucune image
+                child:  widget.characterImage != null // Vérifie s'il y a une image
+                    ? Image.network(
+                        'https://mds.sprw.dev/image_data/${ widget.characterImage}',
+                        width: 50,
+                        height: 50,
+                        errorBuilder: (context, error, stackTrace) =>
+                          const Icon(Icons.android),
+                      )
+                    : const Icon(Icons.android),
               ),
             ),
           Expanded(
@@ -190,8 +195,7 @@ class _MessageScreenState extends State<MessageScreen>
         children: [
           Expanded(
             child: ListView.builder(
-              controller:
-                  _scrollController, // Utilisation du contrôleur de défilement
+              controller: _scrollController,
               itemCount: _messages.length + (_isBotTyping ? 1 : 0),
               itemBuilder: (context, index) {
                 if (index >= _messages.length) {
@@ -231,7 +235,6 @@ class _MessageScreenState extends State<MessageScreen>
                     if (message.isNotEmpty) {
                       _sendMessage(message);
                       _messageController.clear();
-                      // Défilement vers le bas après l'envoi d'un message
                       WidgetsBinding.instance!.addPostFrameCallback((_) {
                         _scrollToBottom();
                       });

@@ -1,3 +1,4 @@
+import 'package:chatbot/view/show_user.dart';
 import 'package:flutter/material.dart';
 import 'package:chatbot/view/home_screen.dart';
 import 'package:chatbot/service/auth_service.dart';
@@ -33,26 +34,32 @@ class _UserScreenState extends State<UserScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => const HomeScreen())
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
             );
           },
         ),
         title: const Text('User List'),
       ),
-      body: Center (
+      body: Center(
         child: ListView.builder(
           itemCount: _allUserInfo.length,
           itemBuilder: (context, index) {
-            return Card(
-              child: ListTile(
-                title: Text(_allUserInfo[index]['username']),
-                subtitle: Text(_allUserInfo[index]['email']),
+            return GestureDetector(
+              onTap: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ShowUser(userId: _allUserInfo[index]['id'].toString())));
+              },
+              child: Card(
+                child: ListTile(
+                  title: Text(_allUserInfo[index]['username']),
+                  subtitle: Text(_allUserInfo[index]['email']),
+                ),
               ),
             );
           },
         ),
-      )
+      ),
     );
   }
 }

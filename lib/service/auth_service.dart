@@ -161,4 +161,57 @@ class AuthentificationService {
       return [];
     }
   }
+
+  // update user info
+  Future<void> updateUserInfo(String username, String email, String firstname, String lastname) async {
+    final id = await getId();
+    final token = await getToken();
+    if (id == null) return;
+
+    final Map<String, String> data = {
+      'username': username,
+      'email': email,
+      'firstname': firstname,
+      'lastname': lastname,
+    };
+
+    final String jsonBody = jsonEncode(data);
+
+    final response = await http.put(
+      Uri.parse('$baseUrl/users/$id'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonBody,
+    );
+
+    print('Response status updateUserInfo: ${response.statusCode}');
+    print('Response body updateUserInfo: ${response.body}');
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update user info');
+    }
+  }
+
+  // get user info by ID
+  Future<Map<String, dynamic>> getUserInfoById(String userId) async {
+    final token = await getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/users/$userId'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    print('Response status getUserInfoById: ${response.statusCode}');
+    print('Response body getUserInfoById: ${response.body}');
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as Map<String, dynamic>;
+    } else {
+      throw Exception('Failed to load user info');
+    }
+  }
 }

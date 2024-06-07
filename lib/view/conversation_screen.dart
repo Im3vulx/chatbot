@@ -1,6 +1,8 @@
+import 'package:chatbot/view/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:chatbot/service/character_service.dart';
 import 'package:chatbot/service/conversation_service.dart';
+import 'package:chatbot/view/message_screen.dart';
 
 class ConversationScreen extends StatefulWidget {
   const ConversationScreen({super.key});
@@ -69,6 +71,17 @@ class _ConversationScreenState extends State<ConversationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HomeScreen(),
+              ),
+            );
+          },
+        ),
         title: const Text('Conversation List'),
       ),
       body: RefreshIndicator(
@@ -119,7 +132,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
                             )
                           : const Icon(Icons.person),
                       title: Text(character['name'] ?? 'Unknown'),
-                      // onTap: () => _onConversationTap(conversation),
+                      onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MessageScreen(conversationId: conversation['id'].toString(), characterName: character['name'].toString(), characterImage: character['image'].toString())),
+                    )
                     );
                   }
                 },

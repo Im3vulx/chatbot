@@ -1,3 +1,4 @@
+import 'package:chatbot/view/conversation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:chatbot/service/auth_service.dart';
 import 'package:chatbot/view/login_screen.dart';
@@ -71,7 +72,14 @@ class _HomeScreenState extends State<HomeScreen> {
               );
               }, 
               child: const Icon(Icons.circle),
-            )
+            ),
+            ElevatedButton(
+              onPressed: (){ 
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ConversationScreen())
+                );
+              }, 
+              child: const Icon(Icons.chat),
+            ),
           ],
         ),
       ),

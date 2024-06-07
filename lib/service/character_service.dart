@@ -98,4 +98,25 @@ class CharacterService {
       return ApiResponse.fromJson(jsonDecode(response.body));
     }
   }
+
+  // getCharacters
+  Future<Map<String, dynamic>> getCharacters(String charactereId) async {
+    final token = await AuthentificationService().getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/characters/$charactereId'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    print('Response status getCharacters: ${response.statusCode}');
+    print('Response body getCharacters: ${response.body}');
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      return {};
+    }
+  }
 }

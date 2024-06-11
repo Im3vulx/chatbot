@@ -44,16 +44,26 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Inscription'),
+        title: const Text('Sign up'),
+        titleTextStyle: const TextStyle(
+            color: Color(0xFF344D59),
+            fontSize: 24,
+            fontWeight: FontWeight.bold),
         actions: [
           ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor:
+                  MaterialStateProperty.all<Color>(Colors.transparent),
+              elevation: MaterialStateProperty.all<double>(0),
+              shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
+            ),
             onPressed: () {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const LoginScreen()),
               );
             },
-            child: const Text('Se connecter'),
+            child: const Text('Login', style: TextStyle(color: Color(0xFF137C8B))),
           ),
         ],
       ),
@@ -72,29 +82,130 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
             TextField(
               controller: _usernameController,
-              decoration: const InputDecoration(labelText: 'Nom d\'utilisateur'),
+              decoration: InputDecoration(labelText: 'Nom d\'utilisateur',
+              hintStyle: const TextStyle(color: Color(0xFFBDBDBD)),
+                  filled: true,
+                  fillColor: const Color(0xFFF6F6F6),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        const BorderSide(color: Color(0xFFE8E8E8), width: 1.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        const BorderSide(color: Color(0xFFE8E8E8), width: 1.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        const BorderSide(color: Color(0xFFE8E8E8), width: 1.0),
+                  ),),
             ),
+            const SizedBox(height: 16),
             TextField(
               controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Mot de passe'),
+              decoration: InputDecoration(labelText: 'Mot de passe',
+              hintStyle: const TextStyle(color: Color(0xFFBDBDBD)),
+                  filled: true,
+                  fillColor: const Color(0xFFF6F6F6),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        const BorderSide(color: Color(0xFFE8E8E8), width: 1.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        const BorderSide(color: Color(0xFFE8E8E8), width: 1.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        const BorderSide(color: Color(0xFFE8E8E8), width: 1.0),
+                  ),),
               obscureText: true,
             ),
+            const SizedBox(height: 16),
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration:  InputDecoration(labelText: 'Email',
+              hintStyle: const TextStyle(color: Color(0xFFBDBDBD)),
+                  filled: true,
+                  fillColor: const Color(0xFFF6F6F6),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        const BorderSide(color: Color(0xFFE8E8E8), width: 1.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        const BorderSide(color: Color(0xFFE8E8E8), width: 1.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        const BorderSide(color: Color(0xFFE8E8E8), width: 1.0),
+                  ),),
             ),
+            const SizedBox(height: 16),
             TextField(
               controller: _firstnameController,
-              decoration: const InputDecoration(labelText: 'Prénom'),
+              decoration: InputDecoration(labelText: 'Prénom',
+              hintStyle: const TextStyle(color: Color(0xFFBDBDBD)),
+                  filled: true,
+                  fillColor: const Color(0xFFF6F6F6),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        const BorderSide(color: Color(0xFFE8E8E8), width: 1.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        const BorderSide(color: Color(0xFFE8E8E8), width: 1.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        const BorderSide(color: Color(0xFFE8E8E8), width: 1.0),
+                  ),),
             ),
+            const SizedBox(height: 16),
             TextField(
               controller: _lastnameController,
-              decoration: const InputDecoration(labelText: 'Nom'),
+              decoration:  InputDecoration(labelText: 'Nom',
+              hintStyle: const TextStyle(color: Color(0xFFBDBDBD)),
+                  filled: true,
+                  fillColor: const Color(0xFFF6F6F6),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        const BorderSide(color: Color(0xFFE8E8E8), width: 1.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        const BorderSide(color: Color(0xFFE8E8E8), width: 1.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        const BorderSide(color: Color(0xFFE8E8E8), width: 1.0),
+                  ),),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(const Color(0xFF137C8B)),
+                elevation: MaterialStateProperty.all<double>(0),
+                shadowColor:
+                    MaterialStateProperty.all<Color>(const Color(0xFF137C8B)),
+              ),
               onPressed: _register,
-              child: const Text('S\'inscrire'),
+              child: const Text('Sign up', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),

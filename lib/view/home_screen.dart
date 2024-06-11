@@ -42,6 +42,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
+        titleTextStyle: const TextStyle(
+            color: Color(0xFF344D59),
+            fontSize: 24,
+            fontWeight: FontWeight.bold
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -63,6 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 40.0),
             Card(
+              color: const Color(0xFF137C8B),
               elevation: 4,
               child: InkWell(
                 onTap: () {
@@ -76,8 +82,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Mon Profil', style: TextStyle(fontSize: 18)),
-                      Icon(Icons.person),
+                      Text('Utilisateurs', style: TextStyle(fontSize: 18, color: Colors.white)),
+                      Icon(Icons.person, color: Colors.white),
                     ],
                   ),
                 ),
@@ -85,6 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 20.0),
             Card(
+              color: const Color(0xFF137C8B),
               elevation: 4,
               child: InkWell(
                 onTap: () {
@@ -95,8 +102,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Univers', style: TextStyle(fontSize: 18)),
-                      Icon(Icons.public),
+                      Text('Univers', style: TextStyle(fontSize: 18, color: Colors.white)),
+                      Icon(Icons.public, color: Colors.white),
                     ],
                   ),
                 ),
@@ -104,6 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 20.0),
             Card(
+              color: const Color(0xFF137C8B),
               elevation: 4,
               child: InkWell(
                 onTap: (){ 
@@ -114,8 +122,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Conversation', style: TextStyle(fontSize: 18)),
-                      Icon(Icons.chat),
+                      Text('Conversations', style: TextStyle(fontSize: 18, color: Colors.white)),
+                      Icon(Icons.chat, color: Colors.white),
                     ],
                   ),
                 ),

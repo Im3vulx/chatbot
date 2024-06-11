@@ -44,14 +44,19 @@ class _UniverseInfoState extends State<UniverseInfo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${_universeData?['name']}'),
+        title: Text(_universeData?['name'] ?? 'Loading...'),
+        titleTextStyle: const TextStyle(
+            color: Color(0xFF344D59),
+            fontSize: 24,
+            fontWeight: FontWeight.bold
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh, color: Colors.black),
             onPressed: _loadUniverseData,
           ),
           IconButton(
-            icon: const Icon(Icons.person),
+            icon: const Icon(Icons.person, color: Colors.black),
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return CharacterScreen(universeId: widget.universeId);
@@ -59,33 +64,60 @@ class _UniverseInfoState extends State<UniverseInfo> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.save),
+            icon: const Icon(Icons.save, color: Colors.black),
             onPressed: _updateUniverseName,
           ),
         ],
       ),
       body: SingleChildScrollView(
-        child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
             children: [
               Container(
-                width: 350,
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF709CA7),
+                  borderRadius: BorderRadius.circular(10.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 10.0,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     TextField(
                       decoration: const InputDecoration(
-                        labelText: '',
+                        labelText: 'Nom de l\'univers',
+                        border: OutlineInputBorder(),
+                        labelStyle: TextStyle(color: Colors.white),
                       ),
                       controller: _nameController,
+                      style: const TextStyle(color: Colors.white),
                     ),
                     const SizedBox(height: 20),
-                    Text('${_universeData?['description']}'),
+                    Text(
+                      _universeData?['description'] ?? 'Aucune description disponible',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white70,
+                      ),
+                    ),
                     const SizedBox(height: 20),
-                    Image.network(
-                      "https://mds.sprw.dev/image_data/${_universeData?['image']}",
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.error),
+                    Center(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Image.network(
+                          "https://mds.sprw.dev/image_data/${_universeData?['image']}",
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(Icons.error, size: 60.0, color: Colors.white),
+                        ),
+                      ),
                     ),
                   ],
                 ),

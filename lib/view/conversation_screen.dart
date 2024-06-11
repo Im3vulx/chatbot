@@ -85,6 +85,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
           },
         ),
         title: const Text('Conversation List'),
+        titleTextStyle: const TextStyle(
+            color: Color(0xFF344D59),
+            fontSize: 24,
+            fontWeight: FontWeight.bold
+        ),
       ),
       body: RefreshIndicator(
         onRefresh: _loadAllConversation,
@@ -109,7 +114,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
               child: ListTile(
                 leading: FutureBuilder<Map<String, dynamic>>(
                   future: _getCharacterById(
-                      conversation['character_id'].toString()),
+                    conversation['character_id'].toString(),
+                  ),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator();
@@ -117,20 +123,28 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       return const Icon(Icons.error);
                     } else {
                       final character = snapshot.data ?? {};
-                      return CircleAvatar(
-                        backgroundColor: character['image'] == null
-                            ? Colors.blue
-                            : null, // Couleur de fond différente si aucune image
-                        child: character['image'] !=
-                                null // Vérifie s'il y a une image
-                            ? Image.network(
-                                'https://mds.sprw.dev/image_data/${character['image']}',
-                                width: 50,
-                                height: 50,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    const Icon(Icons.error),
+                      return Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: character['image'] == null
+                              ? const Color(0xFF137C8B)
+                              : null, // Couleur de fond différente si aucune image
+                        ),
+                        child: character['image'] != null
+                            ? ClipOval(
+                                child: Image.network(
+                                  'https://mds.sprw.dev/image_data/${character['image']}',
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(Icons.error),
+                                ),
                               )
-                            : const Icon(Icons.android), // Utilise un autre icône s'il n'y a pas d'image
+                            : const Icon(Icons
+                                .android), // Utilise un autre icône s'il n'y a pas d'image
                       );
                     }
                   },
@@ -171,6 +185,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFF137C8B),
         onPressed: () {
           showDialog(
             context: context,
@@ -178,13 +193,15 @@ class _ConversationScreenState extends State<ConversationScreen> {
               return StatefulBuilder(
                 builder: (BuildContext context, StateSetter setState) {
                   return AlertDialog(
-                    title: const Text('Créer une conversation'),
+                    backgroundColor: const Color(0xFF709CA7),
+                    title: const Text('Créer une conversation', style: TextStyle(color: Colors.white)),
                     content: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         DropdownButton<String>(
+                          dropdownColor: const Color(0xFF709CA7),
                           value: selectedUniverse,
-                          hint: const Text('Sélectionnez un univers'),
+                          hint: const Text('Sélectionnez un univers', style: TextStyle(color: Colors.white)),
                           onChanged: (String? newValue) {
                             setState(() {
                               selectedUniverse = newValue;
@@ -196,14 +213,15 @@ class _ConversationScreenState extends State<ConversationScreen> {
                           items: universes
                               .map((e) => DropdownMenuItem<String>(
                                     value: e['id'].toString(),
-                                    child: Text(e['name']),
+                                    child: Text(e['name'], style: const TextStyle(color: Colors.white)),
                                   ))
                               .toList(),
                         ),
                         if (selectedUniverse != null)
                           DropdownButton<String>(
+                            dropdownColor: const Color(0xFF709CA7),
                             value: selectedCharacter,
-                            hint: const Text('Sélectionnez un personnage'),
+                            hint: const Text('Sélectionnez un personnage', style: TextStyle(color: Colors.white)),
                             onChanged: (String? newValue) {
                               setState(() {
                                 selectedCharacter = newValue;
@@ -212,7 +230,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                             items: characters
                                 .map((e) => DropdownMenuItem<String>(
                                       value: e['id'].toString(),
-                                      child: Text(e['name']),
+                                      child: Text(e['name'], style: const TextStyle(color: Colors.white)),
                                     ))
                                 .toList(),
                           ),
@@ -223,14 +241,14 @@ class _ConversationScreenState extends State<ConversationScreen> {
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: const Text('Annuler'),
+                        child: const Text('Annuler', style: TextStyle(color: Colors.white)),
                       ),
                       TextButton(
                         onPressed: () {
                           _createConversation();
                           Navigator.of(context).pop();
                         },
-                        child: const Text('Créer'),
+                        child: const Text('Créer', style: TextStyle(color: Colors.white)),
                       ),
                     ],
                   );
@@ -239,7 +257,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
             },
           );
         },
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }

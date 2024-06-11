@@ -118,18 +118,15 @@ class _MessageScreenState extends State<MessageScreen>
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: CircleAvatar(
-                backgroundColor: widget.characterImage == null
-                    ? Colors.blue
-                    : null, // Couleur de fond différente si aucune image
-                child:  widget.characterImage != null // Vérifie s'il y a une image
-                    ? Image.network(
-                        'https://mds.sprw.dev/image_data/${ widget.characterImage}',
-                        width: 50,
-                        height: 50,
-                        errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.android),
+                backgroundColor: Colors.blue,
+                backgroundImage: widget.characterImage != null
+                    ? NetworkImage(
+                        'https://mds.sprw.dev/image_data/${widget.characterImage}',
                       )
-                    : const Icon(Icons.android),
+                    : null,
+                child: widget.characterImage == null
+                    ? const Icon(Icons.android)
+                    : null,
               ),
             ),
           Expanded(
@@ -137,13 +134,17 @@ class _MessageScreenState extends State<MessageScreen>
               margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: isUserMessage ? Colors.blue[100] : Colors.grey[300],
+                color:
+                    isUserMessage ? const Color(0xFF137C8B) : Colors.grey[300],
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(message['content']),
+                  Text(message['content'],
+                      style: TextStyle(
+                        color: isUserMessage ? Colors.white : Colors.black,
+                      )),
                   if (message.containsKey('image_url') &&
                       message['image_url'] != null)
                     Padding(
@@ -190,6 +191,10 @@ class _MessageScreenState extends State<MessageScreen>
           },
         ),
         title: Text(widget.characterName),
+        titleTextStyle: const TextStyle(
+            color: Color(0xFF344D59),
+            fontSize: 24,
+            fontWeight: FontWeight.bold),
       ),
       body: Column(
         children: [
@@ -224,12 +229,18 @@ class _MessageScreenState extends State<MessageScreen>
                     ),
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.refresh),
+                const SizedBox(width: 8),
+                OutlinedButton(
                   onPressed: _regenerateLastMessage,
+                  style: OutlinedButton.styleFrom(
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(12),
+                    side: const BorderSide(color: Color(0xFF137C8B)),
+                  ),
+                  child: const Icon(Icons.refresh, color: Color(0xFF137C8B)),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.send),
+                const SizedBox(width: 8),
+                ElevatedButton(
                   onPressed: () {
                     final message = _messageController.text.trim();
                     if (message.isNotEmpty) {
@@ -240,6 +251,12 @@ class _MessageScreenState extends State<MessageScreen>
                       });
                     }
                   },
+                  style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(12),
+                    backgroundColor: const Color(0xFF137C8B), // Background color
+                  ),
+                  child: const Icon(Icons.send, color: Colors.white),
                 ),
               ],
             ),

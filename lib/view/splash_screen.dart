@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:chatbot/view/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -16,8 +15,8 @@ class _SplashScreenState extends State<SplashScreen> {
     _navigateToLogin();
   }
 
-  _navigateToLogin() async {
-    await Future.delayed(const Duration(seconds: 1), () {});
+  Future<void> _navigateToLogin() async {
+    await Future.delayed(const Duration(seconds: 2)); // Ajout d'un délai de 2 secondes
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -27,8 +26,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
+      backgroundColor: Color(0xFF709CA7), // Couleur de fond
       body: Center(
-        child: Text('Splash Screen', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+        child: CircularProgressIndicator( // Indicateur de chargement circulaire
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.white), // Couleur de l'indicateur
+        ),
       ),
     );
   }

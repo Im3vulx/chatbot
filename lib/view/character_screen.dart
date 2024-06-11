@@ -3,7 +3,7 @@ import 'package:chatbot/service/character_service.dart';
 import 'package:chatbot/view/show_character.dart';
 
 class CharacterScreen extends StatefulWidget {
-  const CharacterScreen({super.key, required this.universeId});
+  const CharacterScreen({Key? key, required this.universeId}) : super(key: key);
   final String universeId;
 
   @override
@@ -40,51 +40,60 @@ class _CharacterScreenState extends State<CharacterScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Liste des Personnages'),
+        titleTextStyle: const TextStyle(
+          color: Color(0xFF344D59),
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh, color: Colors.black),
+            onPressed: _loadAllCharacters,
+          ),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: _loadAllCharacters,
-        child: Center(
-          child: _allCharacterInfo.isEmpty
-              ? const CircularProgressIndicator()
-              : ListView.builder(
-                  itemCount: _allCharacterInfo.length,
-                  itemBuilder: (context, index) {
-                    return buildCharacterCard(context, _allCharacterInfo[index], widget.universeId);
-                  },
-                ),
+        child: ListView.builder(
+          itemCount: _allCharacterInfo.length,
+          itemBuilder: (context, index) {
+            return buildCharacterCard(context, _allCharacterInfo[index], widget.universeId);
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFF137C8B),
         onPressed: () {
           showDialog(
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: const Text('Ajouter un Personnage'),
+                backgroundColor: const Color(0xFF709CA7),
+                title: const Text('Ajouter un Personnage', style: TextStyle(color: Colors.white)),
                 content: TextField(
                   controller: _textFieldController,
-                  decoration: const InputDecoration(hintText: 'Entrez le nom du personnage'),
+                  decoration: const InputDecoration(hintText: 'Entrez le nom du personnage', hintStyle: TextStyle(color: Colors.white)),
                 ),
                 actions: [
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Annuler'),
+                    child: const Text('Annuler', style: TextStyle(color: Colors.white)),
                   ),
                   TextButton(
                     onPressed: () {
                       _addCharacter();
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Ajouter'),
+                    child: const Text('Ajouter', style: TextStyle(color: Colors.white)),
                   ),
                 ],
               );
             },
           );
         },
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
@@ -102,38 +111,49 @@ class _CharacterScreenState extends State<CharacterScreen> {
           ),
         );
       },
-      child: Container(
-        margin: const EdgeInsets.all(10.0),
-        height: 100.0,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black),
-          borderRadius: BorderRadius.circular(10.0),
+      child: Card(
+        color: const Color(0xFF709CA7),
+        margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+        elevation: 4.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
         ),
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.network(
-                'https://mds.sprw.dev/image_data/${characterInfo['image']}',
-                errorBuilder: (context, error, stackTrace) => const Icon(
-                  Icons.image_not_supported,
-                  size: 60.0,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Image.network(
+                  'https://mds.sprw.dev/image_data/${characterInfo['image']}',
+                  width: 60.0,
+                  height: 60.0,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => const Icon(
+                    Icons.image_not_supported,
+                    size: 60.0,
+                  ),
                 ),
               ),
-            ),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    characterInfo['name'] ?? 'Personnage inconnu',
-                    style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                  ),
-                ],
+              const SizedBox(width: 10.0),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      characterInfo['name'] ?? 'Personnage inconnu',
+                      style: const TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+              const Icon(Icons.arrow_forward_ios, color: Colors.white),
+            ],
+          ),
         ),
       ),
     );
